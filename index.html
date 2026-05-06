@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AWS Cost Monitoring Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header class="hero">
+      <div>
+        <p class="eyebrow">AWS Cost Monitoring</p>
+        <h1>Cloud Cost Dashboard</h1>
+        <p class="subtitle">
+          Automated AWS billing reports and real-time monitoring powered by Lambda, CloudWatch, SNS, EventBridge, and S3.
+        </p>
+      </div>
+
+      <div class="status-card">
+        <span class="status-dot"></span>
+        System Active
+      </div>
+    </header>
+
+    <section class="summary-grid">
+
+      <div class="card">
+        <p class="card-label">Total Weekly Cost</p>
+        <h2>$0.00</h2>
+        <p class="card-subtext">Last 7 days</p>
+      </div>
+
+      <div class="card">
+        <p class="card-label">Top Service</p>
+        <h2>AmazonS3</h2>
+        <p class="card-subtext">Highest usage</p>
+      </div>
+
+      <div class="card">
+        <p class="card-label">Billing Threshold</p>
+        <h2>$1.00</h2>
+        <p class="card-subtext">CloudWatch Alarm</p>
+      </div>
+
+    </section>
+
+    <section class="table-card">
+
+      <div class="section-header">
+        <h2>Per-Service Cost Breakdown</h2>
+        <p>Updated automatically every 7 days</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Weekly Cost</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>AmazonEC2</td>
+            <td>$0.00</td>
+            <td><span class="badge normal">Normal</span></td>
+          </tr>
+
+          <tr>
+            <td>AmazonS3</td>
+            <td>$0.00</td>
+            <td><span class="badge normal">Normal</span></td>
+          </tr>
+
+          <tr>
+            <td>AWSLambda</td>
+            <td>$0.00</td>
+            <td><span class="badge normal">Normal</span></td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </section>
+
+    <section class="architecture-card">
+
+      <h2>Architecture Flow</h2>
+
+      <div class="flow">
+        <span>EventBridge</span>
+        <span>→</span>
+        <span>Lambda</span>
+        <span>→</span>
+        <span>CloudWatch</span>
+        <span>→</span>
+        <span>SNS</span>
+        <span>→</span>
+        <span>Email</span>
+      </div>
+
+    </section>
+
+    <footer>
+      Built with AWS Lambda, CloudWatch, SNS, EventBridge, S3, and Python (Boto3).
+    </footer>
+
+  </div>
+
+</body>
+</html>
