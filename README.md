@@ -3,6 +3,9 @@
 ## Overview
 Built a serverless AWS cost monitoring system that tracks cloud spending, sends real-time billing alerts, generates automated weekly reports, and updates a live dashboard hosted on Amazon S3.
 
+<img width="3191" height="1643" alt="dashboard" src="https://github.com/user-attachments/assets/5df8af1b-b69c-47ce-b705-698ad932e756" />
+
+
 ---
 
 ## Features
