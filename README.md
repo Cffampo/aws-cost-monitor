@@ -1,20 +1,24 @@
 # AWS Cost Monitoring System
 
 ## Overview
-Built a serverless AWS cost monitoring system that tracks cloud spending, sends real-time billing alerts, and generates automated weekly cost reports.
+Built a serverless AWS cost monitoring system that tracks cloud spending, sends real-time billing alerts, generates automated weekly reports, and updates a live dashboard hosted on Amazon S3.
 
 ---
 
 ## Features
-- Weekly cost reports using AWS Lambda
+- Automated weekly AWS cost reports using AWS Lambda
 - Per-service cost breakdown (EC2, S3, Lambda)
-- Real-time billing alerts via CloudWatch + SNS
-- Fully automated using EventBridge scheduling
+- Real-time billing alerts with CloudWatch Alarms + SNS
+- Fully automated scheduling using Amazon EventBridge
+- Live cloud cost dashboard hosted on Amazon S3
+- Dynamic HTML dashboard generation through Lambda
 
 ---
 
 ## Architecture
-CloudWatch → Lambda → SNS → Email  
+
+CloudWatch Metrics → Lambda → SNS → Email  
+CloudWatch Metrics → Lambda → S3 Dashboard  
 CloudWatch Alarm → SNS → Email  
 EventBridge → Lambda (weekly trigger)
 
@@ -23,8 +27,10 @@ EventBridge → Lambda (weekly trigger)
 ## Technologies
 - AWS Lambda
 - Amazon CloudWatch
+- CloudWatch Alarms
 - Amazon SNS
 - Amazon EventBridge
+- Amazon S3
 - Python (Boto3)
 
 ---
@@ -32,67 +38,79 @@ EventBridge → Lambda (weekly trigger)
 ## How It Works
 
 ### AWS Lambda
-AWS Lambda is a serverless compute service that runs code without managing servers. In this project, Lambda executes a Python function on a weekly schedule to retrieve AWS billing data, process it into a readable format, and send a report via SNS.
+AWS Lambda is used as the core automation engine for the project. A Python-based Lambda function retrieves AWS billing metrics from CloudWatch, generates weekly per-service cost reports, sends notifications through SNS, and dynamically updates the S3-hosted dashboard.
 
 ---
 
 ### Amazon CloudWatch
-CloudWatch collects and monitors AWS metrics. This project uses CloudWatch billing metrics to track total and per-service costs, which are used for both reporting and alerting.
-
----
-
-### Amazon SNS (Simple Notification Service)
-SNS is a messaging service used to send notifications. It delivers both real-time alerts (from CloudWatch alarms) and weekly reports (from Lambda) to email subscribers.
+Amazon CloudWatch collects AWS billing metrics, including total estimated charges and service-level costs. These metrics are used by Lambda for reporting and by CloudWatch Alarms for real-time cost threshold monitoring.
 
 ---
 
 ### CloudWatch Alarms
-CloudWatch Alarms monitor billing thresholds and trigger alerts when costs exceed a defined limit. These alerts are sent through SNS.
+CloudWatch Alarms monitor billing thresholds and trigger alerts when AWS spending exceeds a defined limit. Alerts are automatically sent through Amazon SNS.
+
+---
+
+### Amazon SNS (Simple Notification Service)
+Amazon SNS acts as the notification layer for the system. It delivers both real-time billing alerts and automated weekly cost reports directly to subscribed email recipients.
 
 ---
 
 ### Amazon EventBridge
-EventBridge schedules the Lambda function to run automatically every 7 days, ensuring consistent cost monitoring without manual intervention.
+Amazon EventBridge schedules the Lambda function to execute automatically every 7 days, enabling fully automated reporting without manual intervention.
+
+---
+
+### Amazon S3
+Amazon S3 hosts the live static dashboard website. Lambda dynamically generates and uploads an updated HTML dashboard to S3 after each reporting cycle.
 
 ---
 
 ## Architecture Diagram
 
-            +----------------------+
-            |   CloudWatch Metrics |
-            | (Billing Data)       |
-            +----------+-----------+
-                       |
-                       v
-            +----------------------+
-            |   CloudWatch Alarm   |
-            | (Cost Threshold)     |
-            +----------+-----------+
-                       |
-                       v
-                 +-----------+
-                 |    SNS    |
-                 | (Alerts)  |
-                 +-----+-----+
-                       |
-                       v
-                    Email
+```text
+                 +----------------------+
+                 |   CloudWatch Metrics |
+                 |   (Billing Data)     |
+                 +----------+-----------+
+                            |
+                            v
+                      +-----------+
+                      |  Lambda   |
+                      | (Reports) |
+                      +-----+-----+
+                            |
+              +-------------+-------------+
+              |                           |
+              v                           v
+        +-----------+              +-------------+
+        |    SNS    |              |     S3      |
+        | (Emails)  |              | Dashboard   |
+        +-----+-----+              +------+------+ 
+              |                           |
+              v                           v
+           Email                   Live Website
 
-            +----------------------+
-            |   EventBridge        |
-            | (Weekly Schedule)    |
-            +----------+-----------+
-                       |
-                       v
-                 +-----------+
-                 |  Lambda   |
-                 | (Reports) |
-                 +-----+-----+
-                       |
-                       v
-                 +-----------+
-                 |    SNS    |
-                 +-----+-----+
-                       |
-                       v
-                    Email
+
+                 +----------------------+
+                 |   CloudWatch Alarm   |
+                 | (Cost Threshold)     |
+                 +----------+-----------+
+                            |
+                            v
+                       +----------+
+                       |   SNS    |
+                       +-----+----+
+                             |
+                             v
+                           Email
+
+
+                 +----------------------+
+                 |     EventBridge      |
+                 |  Weekly Scheduler    |
+                 +----------+-----------+
+                            |
+                            v
+                         Lambda
